@@ -56,11 +56,11 @@ inner_cv = StratifiedKFold(n_splits=6)
 # 1) We already have a train/test split
 # 2) Cross validation: we split the training data into 4-folds: train + validation
 # 3) For each fold, we apply feature  selection to reduce the dataset
-# 4) For each fold, we apply 5-CV for hyperparameter tuning
+# 4) For each fold, we apply 6-CV for hyperparameter tuning
 # 5) For each fold, we test the optimal models
 
 # Step 1) Is already done
-# Step 2) We split the data into 5 folds (outer folds)
+# Step 2) We split the data into 4 folds (outer folds)
 y_train.reset_index(drop=True, inplace=True)  # We need to reset the indices of y_train so we can apply CV split
 dt_fold_performance_lst = []  # For df and rf we will append their performances to these lists and then take the mean of these
 rf_fold_performance_lst = []

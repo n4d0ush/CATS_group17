@@ -51,13 +51,6 @@ dt_hp_grid = {'max_depth': [5, 10, 15],
 outer_cv = StratifiedKFold(n_splits=4)
 inner_cv = StratifiedKFold(n_splits=6)
 
-# Nested CV with parameter tunning: GridSearchCV and RandomizedSearchCV
-
-# GridSearchCV for hyperparameter tuning  (Computational expensive when many permutation and combination for different parameters)
-best_scores_GScv_per_model = {}
-dataframes = {}
-nested_scores_GScv = {}
-
 # -----------
 # Plan:
 # 1) We already have a train/test split
@@ -72,7 +65,7 @@ y_train.reset_index(drop=True, inplace=True)  # We need to reset the indices of 
 dt_fold_performance_lst = []  # For df and rf we will append their performances to these lists and then take the mean of these
 rf_fold_performance_lst = []
 for i, (train_index, test_index) in enumerate(outer_cv.split(X_train, y_train)):
-    print(f"We are currently in Fold {i + 1}")
+    print(f"We are currently in Outer fold {i + 1}")
     X_train_fold = X_train.iloc[train_index, :]  # train_index is a list of indices, but we can pass lists of indices in np
     y_train_fold = y_train[train_index]
     X_validate_fold = X_train.iloc[test_index, :]

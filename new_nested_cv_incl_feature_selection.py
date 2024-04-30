@@ -131,7 +131,7 @@ for i, (train_index, test_index) in enumerate(outer_cv.split(X_train, y_train)):
         for feature in features_list:
             rand_feat_data = X_train.iloc[:, rand_feat]
             feature_data = X_train.iloc[:, feature]
-            if rand_feat_data.corr(feature_data) > 0.8:
+            if abs(rand_feat_data.corr(feature_data)) > 0.8:
                 cluster_lst.append(feature)
 
         # Select feature from cluster which serves as indep feature

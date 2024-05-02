@@ -126,36 +126,46 @@ for i, (train_index, test_index) in enumerate(outer_cv.split(X_train, y_train)):
     features = pd.DataFrame(significant_features['Feature'])
 
     features_list = list(features['Feature'])
-    indep_features_list = []
-
+    
     # Making correlation matrix
-    selected = X_train.iloc[:, features_list]
-    correlation_matrix = selected.corr()
+    #selected = X_train.iloc[:, features_list]
+    #correlation_matrix = selected.corr()
 
-    # Go through each training feature in our dataset, until we have no more features left
-    while len(features_list) != 0:
-        # Randomly take feature from feature_lst
-        rand_feat = random.choice(features_list)
+    # Make for each feature an empty set
+    clusters_list = [set() for i in range(len(features_list) + 1)]
+    j = 0
+    for i in range(0, len(features_list)):
+        feature_i_data = X_train.iloc[:, i]
+        feature_neighbour_data = X_train.iloc[:, i + 1]
+        current_cluster = clusters_list[j]
+        if abs(feature_i_data.corr(feature_neighbour_data)) > 0.9:
+            # print("Feature",i,"and feature", i+1, "are correlated")
+            current_cluster.add(features_list[i])
+            if i != (len(features_list)-1):
+                current_cluster.add(features_list[i + 1])
+        else:
+            # print("Feature",i,"and feature", i+1, "are not correlated")
+            j += 1  # we need to go to a new cluster
 
-        # Create cluster for rand_feat
-        cluster_lst = []
+    clusters_list = [cluster for cluster in clusters_list if cluster != set()]
+    print(len(clusters_list))
 
-        # Add to the cluster all features with correlation > 0.8
-        for feature in features_list:
-            rand_feat_data = X_train.iloc[:, rand_feat]
-            feature_data = X_train.iloc[:, feature]
-            if abs(rand_feat_data.corr(feature_data)) > 0.8:
-                cluster_lst.append(feature)
+    # Make a total list of all correlated features and a list of all non-correlated features
+    correlated_features = []
+    for cluster in clusters_list:
+        for feature in cluster:
+            correlated_features.append(feature)
+    non_correlated_features = []
+    for feature in features_list:
+        if feature not in correlated_features:
+            non_correlated_features.append(feature)
 
-        # Select feature from cluster which serves as indep feature
-        indep_features_list.append(random.choice(cluster_lst))
-
-        # Remove all the features from the cluster from feature_lst
-        for k in cluster_lst:
-            del features_list[features_list.index(k)]
-
-        # Now repeat procedure with the new, smaller feature_lst
-
+    # from each cluster we randomly pick one feature
+    indep_features_list = []
+    for cluster in clusters_list:
+        feature_random = random.choice(list(cluster))
+        indep_features_list.append(feature_random)
+    indep_features_list.extend(non_correlated_features)
     print('This fold has', len(indep_features_list) ,'independent features')
     # select the X_train_fold data for only independent features
     r_X_train_fold = X_train_fold.iloc[:, indep_features_list]

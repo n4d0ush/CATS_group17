@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
 
 from sklearn.model_selection import train_test_split
@@ -13,10 +12,7 @@ from sklearn.metrics import confusion_matrix
 from sklearn.metrics import ConfusionMatrixDisplay
 from sklearn.metrics import roc_curve
 from sklearn.metrics import auc
-from sklearn.preprocessing import label_binarize
-from yellowbrick import ROCAUC
 from sklearn.preprocessing import LabelBinarizer
-from sklearn.metrics import RocCurveDisplay
 
 # Final features and hps:
 hp_rf = {'criterion': 'gini', 'max_depth': None, 'max_features': None, 'min_samples_leaf': 1, 'min_samples_split': 10, 'n_estimators': 40, 'random_state': 42}
